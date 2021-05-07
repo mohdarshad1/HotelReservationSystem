@@ -46,11 +46,11 @@ public class HotelReservation {
 	public void printHotels() {
 		for (Map.Entry<String, Hotel> entry : hotelMap.entrySet()) {
 			System.out.println("Hotel Name : " + entry.getKey());
-			System.out.println("Rate on weekdays for Regular Customers : " + entry.getValue().getRegWeekdayRate());
-			System.out.println("Rate on weekends for Regular Customers : " + entry.getValue().getRegWeekendRate());
+			System.out.println("Rate on weekdays for regular customers : " + entry.getValue().getRegWeekdayRate());
+			System.out.println("Rate on weekends for regular customers : " + entry.getValue().getRegWeekendRate());
 			System.out.println("Hotel Rating : " + entry.getValue().getHotelRating());
-			System.out.println("Rate on weekdays for Reward Customers : " + entry.getValue().getRewWeekdayRate());
-			System.out.println("Rate on weekdays for Reward Customers : " + entry.getValue().getRewWeekdayRate());
+			System.out.println("Rate on weekdays for reward customers : " + entry.getValue().getRewWeekdayRate());
+			System.out.println("Rate on weekdays for reward customers : " + entry.getValue().getRewWeekdayRate());
 			System.out.println();
 		}
 	}
@@ -63,11 +63,11 @@ public class HotelReservation {
 				minimumRent = entry.getKey();
 			}
 		}
-		System.out.println("Cheapest Hotel for you is : ");
+		System.out.println("Cheapest Hotel for you is ");
 		for (Hotel hotel : rentMap.get(minimumRent)) {
-			System.out.print(hotel.getHotelName() + "  "); 
+			System.out.print(hotel.getHotelName() + "  "); // getting every hotel with min rent
 		}
-		System.out.println("\nTotal Rent : " + minimumRent); 
+		System.out.println("Total Rent : " + minimumRent); // printing min rent
 		return true;
 	}
 
@@ -171,7 +171,7 @@ public class HotelReservation {
 		Matcher matcherTo = pattern.matcher(toDate);
 		if (!matcherFrom.find() || !matcherTo.find() || !customerType.equalsIgnoreCase("Regular")
 				|| !customerType.equalsIgnoreCase("Reward")) {
-			throw new InvalidEntryException("Invalid input, Please enter a valid input");
+			throw new InvalidEntryException("Invalid input, Please enter a Valid Input");
 		}
 		return;
 	}
