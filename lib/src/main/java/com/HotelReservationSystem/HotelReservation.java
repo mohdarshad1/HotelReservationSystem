@@ -15,27 +15,12 @@ public class HotelReservation {
 		hotelMap = new HashMap<>();
 	}
 
-	/**
-	 * UC1 adding hotel to the system
-	 * 
-	 * @param name
-	 * @param regularWeekday
-	 * @return
-	 */
 	public boolean addHotel(String name, int regWeekdayRate) {
 		Hotel hotelObject = new Hotel(name, regWeekdayRate);
 		hotelMap.put(name, hotelObject);
 		return true;
 	}
 	
-	/**
-	 * UC3 adding hotel considering weekend rates
-	 * 
-	 * @param name
-	 * @param regWeekdayRate
-	 * @param regWeekendRate
-	 * @return
-	 */
 	public boolean addHotel(String name, int regWeekdayRate, int regWeekendRate) {
 		Hotel hotelObject = new Hotel(name, regWeekdayRate, regWeekendRate);
 		hotelMap.put(name, hotelObject);
@@ -52,7 +37,7 @@ public class HotelReservation {
 		for (Map.Entry<String, Hotel> entry : hotelMap.entrySet()) {
 			System.out.println("Hotel Name : " + entry.getKey());
 			System.out.println("Rate on Weekdays for Regular Customers : " + entry.getValue().getRegWeekdayRate());
-			System.out.println("Rate on Weekends for Regular Customers : " + entry.getValue().getRegWeekendRate());
+			System.out.println("Rate on weekends for Regular Customers : " + entry.getValue().getRegWeekendRate());
 			System.out.println("Hotel Rating : " + entry.getValue().getHotelRating());
 			System.out.println();
 		}
@@ -60,17 +45,38 @@ public class HotelReservation {
 	
 	public Boolean findCheapestHotel(String fromDate, String toDate) {
 		Map<Integer, ArrayList<Hotel>> rentMap = createRentMap(fromDate, toDate);
-		int minimumRent = Integer.MAX_VALUE;					
+		int minimumRent = Integer.MAX_VALUE;						
 		for (Map.Entry<Integer, ArrayList<Hotel>> entry : rentMap.entrySet()) {
 			if (entry.getKey() < minimumRent) {
 				minimumRent = entry.getKey();
 			}
 		}
-		System.out.println("Cheapest Hotel for you is : ");
+		System.out.println("Cheapest Hotel for you is: ");
 		for (Hotel hotel : rentMap.get(minimumRent)) {
-			System.out.print(hotel.getHotelName() + "  "); 			
+			System.out.print(hotel.getHotelName() + "  "); 		
 		}
-		System.out.println("\nTotal Rent : " + minimumRent);			
+		System.out.println("\nTotal Rent : " + minimumRent);		
+		return true;
+	}
+	
+	public boolean cheapestBestRatedHotel(String fromDate, String toDate) {
+		Map<Integer, ArrayList<Hotel>> rentMap = createRentMap(fromDate, toDate);
+		int minimumRent = Integer.MAX_VALUE;
+		for (Map.Entry<Integer, ArrayList<Hotel>> entry : rentMap.entrySet()) {
+			if (entry.getKey() < minimumRent)
+				minimumRent = entry.getKey();
+		}
+		ArrayList<Hotel> cheapestHotels = rentMap.get(minimumRent);
+		String bestRatedCheapestHotel = "";
+		int rating = 0;
+		for (Hotel hotel : cheapestHotels) {
+			if (hotel.getHotelRating() > rating) {
+				bestRatedCheapestHotel = hotel.getHotelName();
+				rating = hotel.getHotelRating();
+			}
+		}
+		System.out.println("Cheapest Hotel for you is " + bestRatedCheapestHotel + " with Rating " + rating + " Total Rent : "
+				+ minimumRent + "\n");
 		return true;
 	}
 	
@@ -90,7 +96,7 @@ public class HotelReservation {
 	public static int[] numberOfDays(String fromDate, String toDate) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMMyyyy");
 		
-		LocalDate from = LocalDate.parse(fromDate, formatter);   
+		LocalDate from = LocalDate.parse(fromDate, formatter);    
 		LocalDate to = LocalDate.parse(toDate, formatter);		 
 		int numWeekdays = 0;
 		int numWeekendDays = 0;
