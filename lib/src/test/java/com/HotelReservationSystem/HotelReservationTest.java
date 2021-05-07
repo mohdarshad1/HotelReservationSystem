@@ -27,4 +27,14 @@ import org.junit.Test;
 		assertEquals("Lakewood", hotelReservation.findCheapestHotel("10Sep2020", "11Sep2020"));
 	}
 	
+	@Test
+	public void whenNewHotelAddedWithWeekend_shouldReturnTrue() {
+
+		HotelReservation hotelReservationObject = new HotelReservation();
+		assertTrue(hotelReservationObject.addHotel("Lakewood", 110, 90));
+		assertTrue(hotelReservationObject.addHotel("Bridgewood", 160, 60));
+		assertTrue(hotelReservationObject.addHotel("Ridgewood", 110, 150));
+
+		hotelReservationObject.printHotels();
+	}
 }
