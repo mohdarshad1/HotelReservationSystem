@@ -32,33 +32,41 @@ public class HotelReservation {
 		hotelMap.put(name, hotelObject);
 		return true;
 	}
+	
+	public boolean addHotel(String name, int regWeekdayRate, int regWeekendRate, int hotelRating, int rewWeekdayRate, int rewWeekendRate) {
+		Hotel hotelObject = new Hotel(name, regWeekdayRate, regWeekendRate, hotelRating, rewWeekdayRate, rewWeekendRate);
+		hotelMap.put(name, hotelObject);
+		return true;
+	}
 
 	public void printHotels() {
 		for (Map.Entry<String, Hotel> entry : hotelMap.entrySet()) {
 			System.out.println("Hotel Name : " + entry.getKey());
-			System.out.println("Rate on Weekdays for Regular Customers : " + entry.getValue().getRegWeekdayRate());
-			System.out.println("Rate on Weekends for Regular Customers : " + entry.getValue().getRegWeekendRate());
+			System.out.println("Rate on weekdays for regular customers : " + entry.getValue().getRegWeekdayRate());
+			System.out.println("Rate on weekends for regular customers : " + entry.getValue().getRegWeekendRate());
 			System.out.println("Hotel Rating : " + entry.getValue().getHotelRating());
+			System.out.println("Rate on weekdays for reward customers : " + entry.getValue().getRewWeekdayRate());
+			System.out.println("Rate on weekdays for reward customers : " + entry.getValue().getRewWeekdayRate());
 			System.out.println();
 		}
 	}
 	
 	public Boolean findCheapestHotel(String fromDate, String toDate) {
 		Map<Integer, ArrayList<Hotel>> rentMap = createRentMap(fromDate, toDate);
-		int minimumRent = Integer.MAX_VALUE;						 //Assigns max possible value
+		int minimumRent = Integer.MAX_VALUE;						
 		for (Map.Entry<Integer, ArrayList<Hotel>> entry : rentMap.entrySet()) {
 			if (entry.getKey() < minimumRent) {
 				minimumRent = entry.getKey();
 			}
 		}
-		System.out.println("Cheapest Hotel for you is : ");
+		System.out.println("Cheapest Hotel for you is ");
 		for (Hotel hotel : rentMap.get(minimumRent)) {
-			System.out.print(hotel.getHotelName() + "  "); 			//getting every hotel with min rent
+			System.out.print(hotel.getHotelName() + "  "); 			
 		}
-		System.out.println("\nTotal Rent : " + minimumRent);			//printing min rent
+		System.out.println("Total Rent : " + minimumRent);			
 		return true;
 	}
-	
+
 	public boolean cheapestBestRatedHotel(String fromDate, String toDate) {
 		Map<Integer, ArrayList<Hotel>> rentMap = createRentMap(fromDate, toDate);
 		int minimumRent = Integer.MAX_VALUE;

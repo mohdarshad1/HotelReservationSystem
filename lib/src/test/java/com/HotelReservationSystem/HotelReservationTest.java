@@ -76,4 +76,13 @@ import org.junit.Test;
 		hotelReservation.addHotel("Ridgewood", 220, 150, 5);
 		assertTrue(hotelReservation.findBestRatedHotelForGivenDates("11Sep2020", "12Sep2020"));
 	}
+	
+	@Test
+	public void whenAddedRatesForRewardCustomers_shouldAdd_hotelWithAllRates() {
+		HotelReservation hotelReservationObject = new HotelReservation();
+		hotelReservationObject.addHotel("Lakewood", 110, 90, 3, 80, 80);
+		hotelReservationObject.addHotel("Bridgewood", 150, 50, 4, 110, 50);
+		hotelReservationObject.addHotel("Ridgewood", 220, 150, 5, 100, 40);
+		hotelReservationObject.printHotels();
+		}
 }
