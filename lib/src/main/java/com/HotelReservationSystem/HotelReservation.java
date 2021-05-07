@@ -7,6 +7,8 @@ import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HotelReservation {
 	private static Map<String, Hotel> hotelMap;
@@ -20,21 +22,23 @@ public class HotelReservation {
 		hotelMap.put(name, hotelObject);
 		return true;
 	}
-	
+
 	public boolean addHotel(String name, int regWeekdayRate, int regWeekendRate) {
 		Hotel hotelObject = new Hotel(name, regWeekdayRate, regWeekendRate);
 		hotelMap.put(name, hotelObject);
 		return true;
 	}
-	
+
 	public boolean addHotel(String name, int regWeekdayRate, int regWeekendRate, int hotelRating) {
 		Hotel hotelObject = new Hotel(name, regWeekdayRate, regWeekendRate, hotelRating);
 		hotelMap.put(name, hotelObject);
 		return true;
 	}
-	
-	public boolean addHotel(String name, int regWeekdayRate, int regWeekendRate, int hotelRating, int rewWeekdayRate, int rewWeekendRate) {
-		Hotel hotelObject = new Hotel(name, regWeekdayRate, regWeekendRate, hotelRating, rewWeekdayRate, rewWeekendRate);
+
+	public boolean addHotel(String name, int regWeekdayRate, int regWeekendRate, int hotelRating, int rewWeekdayRate,
+			int rewWeekendRate) {
+		Hotel hotelObject = new Hotel(name, regWeekdayRate, regWeekendRate, hotelRating, rewWeekdayRate,
+				rewWeekendRate);
 		hotelMap.put(name, hotelObject);
 		return true;
 	}
@@ -42,33 +46,33 @@ public class HotelReservation {
 	public void printHotels() {
 		for (Map.Entry<String, Hotel> entry : hotelMap.entrySet()) {
 			System.out.println("Hotel Name : " + entry.getKey());
-			System.out.println("Rate on weekdays for regular customers : " + entry.getValue().getRegWeekdayRate());
-			System.out.println("Rate on weekends for regular customers : " + entry.getValue().getRegWeekendRate());
+			System.out.println("Rate on weekdays for Regular Customers : " + entry.getValue().getRegWeekdayRate());
+			System.out.println("Rate on weekends for Regular Customers : " + entry.getValue().getRegWeekendRate());
 			System.out.println("Hotel Rating : " + entry.getValue().getHotelRating());
-			System.out.println("Rate on weekdays for reward customers : " + entry.getValue().getRewWeekdayRate());
-			System.out.println("Rate on weekdays for reward customers : " + entry.getValue().getRewWeekdayRate());
+			System.out.println("Rate on weekdays for Reward Customers : " + entry.getValue().getRewWeekdayRate());
+			System.out.println("Rate on weekdays for Reward Customers : " + entry.getValue().getRewWeekdayRate());
 			System.out.println();
 		}
 	}
-	
-	public Boolean findCheapestHotel(String fromDate, String toDate) {
-		Map<Integer, ArrayList<Hotel>> rentMap = createRentMap(fromDate, toDate);
-		int minimumRent = Integer.MAX_VALUE;						
+
+	public Boolean findCheapestHotel(String customerType, String fromDate, String toDate) {
+		Map<Integer, ArrayList<Hotel>> rentMap = createRentMap(customerType, fromDate, toDate);
+		int minimumRent = Integer.MAX_VALUE; // Assigns max possible value
 		for (Map.Entry<Integer, ArrayList<Hotel>> entry : rentMap.entrySet()) {
 			if (entry.getKey() < minimumRent) {
 				minimumRent = entry.getKey();
 			}
 		}
-		System.out.println("Cheapest Hotel for you is ");
+		System.out.println("Cheapest Hotel for you is : ");
 		for (Hotel hotel : rentMap.get(minimumRent)) {
-			System.out.print(hotel.getHotelName() + "  "); 			
+			System.out.print(hotel.getHotelName() + "  "); 
 		}
-		System.out.println("Total Rent : " + minimumRent);			
+		System.out.println("\nTotal Rent : " + minimumRent); 
 		return true;
 	}
 
-	public boolean cheapestBestRatedHotel(String fromDate, String toDate) {
-		Map<Integer, ArrayList<Hotel>> rentMap = createRentMap(fromDate, toDate);
+	public boolean cheapestBestRatedHotel(String customerType, String fromDate, String toDate) {
+		Map<Integer, ArrayList<Hotel>> rentMap = createRentMap(customerType, fromDate, toDate);
 		int minimumRent = Integer.MAX_VALUE;
 		for (Map.Entry<Integer, ArrayList<Hotel>> entry : rentMap.entrySet()) {
 			if (entry.getKey() < minimumRent)
@@ -83,11 +87,11 @@ public class HotelReservation {
 				rating = hotel.getHotelRating();
 			}
 		}
-		System.out.println("Cheapest Hotel for you is : " + bestRatedCheapestHotel + " with Rating  " + rating + " Total Rent : "
-				+ minimumRent + "\n");
+		System.out.println("Cheapest Hotel for you is : " + bestRatedCheapestHotel + " with Rating  " + rating
+				+ " Total Rent : " + minimumRent + "\n");
 		return true;
 	}
-	
+
 	public boolean findBestRatedHotelForGivenDates(String fromDate, String toDate) {
 		int rating = 0;
 		int rent = 0;
@@ -103,19 +107,24 @@ public class HotelReservation {
 		System.out.println("Best Rated Hotel : " + bestRatedHotel + ", Rent : " + rent);
 		return true;
 	}
-	
-	public static Map<Integer, ArrayList<Hotel>> createRentMap(String fromDate, String toDate) {
+
+	public static Map<Integer, ArrayList<Hotel>> createRentMap(String customerType, String fromDate, String toDate) {
 		HashMap<Integer, ArrayList<Hotel>> rentMap = new HashMap<>();
 		int days[] = numberOfDays(fromDate, toDate);
+		int totalRent = 0;
 		for (Map.Entry<String, Hotel> entry : hotelMap.entrySet()) {
-			int totalRent = calculateRent(fromDate, toDate, entry.getValue().getRegWeekdayRate(),
-					entry.getValue().getRegWeekendRate());
-			
+			if (customerType.equalsIgnoreCase("Regular")) {
+				totalRent = calculateRent(fromDate, toDate, entry.getValue().getRegWeekdayRate(),
+						entry.getValue().getRegWeekendRate());
+			} else if (customerType.equalsIgnoreCase("Reward")) {
+				totalRent = calculateRent(fromDate, toDate, entry.getValue().getRewWeekdayRate(),
+						entry.getValue().getRewWeekendRate());
+			}
 			rentMap.computeIfAbsent(totalRent, key -> new ArrayList<>()).add(entry.getValue());
 		}
 		return rentMap;
 	}
-	
+
 	public static int calculateRent(String fromDate, String toDate, int weekdayRate, int weekendRate) {
 		int[] numOfDays = numberOfDays(fromDate, toDate);
 		int weekdayRent = weekdayRate * numOfDays[0];
@@ -126,26 +135,26 @@ public class HotelReservation {
 
 	public static int[] numberOfDays(String fromDate, String toDate) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMMyyyy");
-		
-		LocalDate from = LocalDate.parse(fromDate, formatter);   
-		LocalDate to = LocalDate.parse(toDate, formatter);		 
+
+		LocalDate from = LocalDate.parse(fromDate, formatter); // convert String to LocalDate
+		LocalDate to = LocalDate.parse(toDate, formatter); // convert String to LocalDate
 		int numWeekdays = 0;
 		int numWeekendDays = 0;
 		int days[];
 		days = new int[2];
-		
+
 		for (LocalDate date = from; date.isBefore(to.plusDays(1)); date = date.plusDays(1)) {
 			DayOfWeek day = DayOfWeek.of(date.get(ChronoField.DAY_OF_WEEK));
-			switch(day) {
-			case SATURDAY :
+			switch (day) {
+			case SATURDAY:
 				numWeekendDays++;
 				break;
-				
-			case SUNDAY :
+
+			case SUNDAY:
 				numWeekendDays++;
 				break;
-				
-			default :
+
+			default:
 				numWeekdays++;
 				break;
 			}
@@ -153,6 +162,18 @@ public class HotelReservation {
 		days[0] = numWeekdays;
 		days[1] = numWeekendDays;
 		return days;
+	}
+
+	public void validateInputs(String customerType, String fromDate, String toDate) throws InvalidEntryException {
+		String regex = "^[0-9]{2}[ ][A-Za-z]{3}[ ][0-9]{4}$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcherFrom = pattern.matcher(fromDate);
+		Matcher matcherTo = pattern.matcher(toDate);
+		if (!matcherFrom.find() || !matcherTo.find() || !customerType.equalsIgnoreCase("Regular")
+				|| !customerType.equalsIgnoreCase("Reward")) {
+			throw new InvalidEntryException("Invalid input, Please enter a valid input");
+		}
+		return;
 	}
 
 	public static void main(String[] args) {
